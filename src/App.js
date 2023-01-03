@@ -1,25 +1,52 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from 'react';
+import './TodoApp.scss';
 
-function App() {
+const TodoApp = () => {
+  const [tasks, setTasks] = useState([]);
+  const [newTask, setNewTask] = useState('');
+
+  const addTask = () => {
+    setTasks([...tasks, { text: newTask, id: Date.now() }]);
+    setNewTask('');
+  };
+
+  const removeTask = (id) => {
+    setTasks(tasks.filter((task) => task.id !== id));
+  };
+
+  const editTask = (id, newText) => {
+    setTasks(
+      tasks.map((task) =>
+        task.id === id ? { ...task, text: newText } : task
+      )
+    );
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="todo-app">
+      <h1>Todo List</h1>
+      <div className="task-list">
+        {tasks.map((task) => (
+          <div key={task.id} className="task">
+            <input
+              type="text"
+              value={task.text}
+              onChange={(e) => editTask(task.id, e.target.value)}
+            />
+            <button onClick={() => removeTask(task.id)}>X</button>
+          </div>
+        ))}
+        <div className="task-form">
+          <input
+            type="text"
+            value={newTask}
+            onChange={(e) => setNewTask(e.target.value)}
+          />
+          <button onClick={addTask}>Add Task</button>
+        </div>
+      </div>
     </div>
   );
-}
+};
 
-export default App;
+export default TodoApp;
